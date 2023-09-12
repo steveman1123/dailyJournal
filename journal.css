@@ -1,0 +1,66 @@
+html,body {
+  margin: 0 auto;
+  text-align: center;
+  font-family: sans-serif;
+  background-color: black;
+  color: white;
+}
+
+form {
+  margin-top: 5%;
+}
+
+form * {
+  margin: 5px;
+  background-color: black;
+  color: white;
+}
+
+textarea {
+  width: 50vw;
+  height: 50vh;
+}
+
+#prevents {
+  width: 50%;
+  border: solid white 1px;
+  display: inline-block;
+  text-align: left;
+  padding: 5px;
+  margin-bottom: 25px;
+}
+
+a {
+  color: #2af;
+  text-decoration: none;
+  
+}
+
+.linkwrapper * {
+  margin: 0;
+}
+
+.linkwrapper {
+  margin: 0 0 5px 15px;
+}
+
+#passline {
+  margin-top: 45vh;
+}
+
+.break {
+  margin: 0 auto;
+  border: solid #711 3px;
+  border-radius: 5px;
+  height: 0;
+  width: 25%;
+}
+
+@media screen and (max-width: 640px) {
+  
+  textarea {
+    width: 90vw;
+    height: 90vh;
+  }
+
+}
