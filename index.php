@@ -7,8 +7,8 @@ $pass = "password";
 
 
 //ensure proper time zone
-//date_default_timezone_set('America/Chicago');
-date_default_timezone_set('America/Phoenix');
+//change this ot your timezone
+date_default_timezone_set('UTC');
 
 $entriesdir = "./entries/"; //location of the entries files
 $entriesext = ".json"; //exntension of the entries file
@@ -100,10 +100,8 @@ if((array_key_exists("pass",$_POST) and $_POST['pass']==$pass) or (array_key_exi
       }
     }
   }
-  
-  //var_dump($jsondata);
-  
 ?>
+
     <form name="journalEntry" method="post">
       <input name="date" type="date" value="<?php echo $displayeddate; ?>" readonly title="Note: if the date is of a previous entry, it will overwrite it">
       <br>
@@ -119,16 +117,6 @@ if((array_key_exists("pass",$_POST) and $_POST['pass']==$pass) or (array_key_exi
           <?php
         }
         ?>
-          <!--
-        <label class="star star-2" for="star-2"></label>
-        <input class="star star-2" id="star-2" value=2 type="radio" name="rating"/>
-        <label class="star star-3" for="star-3"></label>
-        <input class="star star-3" id="star-3" value=3 type="radio" name="rating"/>
-        <label class="star star-4" for="star-4"></label>
-        <input class="star star-4" id="star-4" value=4 type="radio" name="rating"/>
-        <label class="star star-5" for="star-5"></label>
-        <input class="star star-5" id="star-5" value=5 type="radio" name="rating" checked="checked" />
-        -->
       </div>
       <br>
       <button type="submit">Done</button>
