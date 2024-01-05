@@ -21,6 +21,27 @@ textarea {
   height: 50vh;
 }
 
+.stars {
+  color: #ec2;
+  display: inline-block;
+}
+
+input.star {
+  opacity: 0;
+  width: 0;
+  margin: 0 auto;
+}
+
+.star {
+  float: left;
+  font-size: 36px;
+  cursor: pointer;
+}
+
+label.star:after { content: '\2605'; color: #ec2; }
+input.star:checked ~ label.star:after { color: #333; }
+
+
 #prevents {
   width: 50%;
   border: solid white 1px;

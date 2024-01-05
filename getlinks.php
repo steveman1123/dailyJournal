@@ -2,7 +2,7 @@
 
 //location of the entries
 $entriesdir = "./entries/";
-$entryext = ".txt";
+$entryext = ".json";
 
 if(array_key_exists('y',$_GET)) {
   $y = $_GET['y'];

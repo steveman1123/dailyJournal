@@ -1,14 +1,17 @@
 <?php
 //password to access the entries
 //change this to whatever you want it to be
+//TODO: have the password set in an external file instead of in this file
 $pass = "password";
 
+
+
 //ensure proper time zone
-//change this to be in your timezome
-date_default_timezone_set('UTC');
+//date_default_timezone_set('America/Chicago');
+date_default_timezone_set('America/Phoenix');
 
 $entriesdir = "./entries/"; //location of the entries files
-$entriesext = ".txt"; //exntension of the entries file
+$entriesext = ".json"; //exntension of the entries file
 
 ?>
 <!DOCTYPE HTML>
@@ -20,16 +23,23 @@ $entriesext = ".txt"; //exntension of the entries file
   </head>
   <body>
 <?php
+
 //if a password is set or if the date and entry are set
 if((array_key_exists("pass",$_POST) and $_POST['pass']==$pass) or (array_key_exists('date',$_POST) and array_key_exists("entry",$_POST))) {
 
   //if data is present, write to the file
   if(array_key_exists("date",$_POST) and array_key_exists("entry",$_POST)) {
-
+    
     //TODO: clean up inputs
     $date = $_POST['date'];
-    $entry = $_POST['entry'];
 
+    
+    $jsondata = array(
+      "entry" => $_POST['entry'],
+      "rating" => $_POST['rating']
+    );
+    
+    
     //TODO: have it create a new month and/or year directory too
 
     //ensure that the date is correctly formatted
@@ -41,7 +51,7 @@ if((array_key_exists("pass",$_POST) and $_POST['pass']==$pass) or (array_key_exi
         mkdir($entriesdir.$y."/".$m,0777,true);
       }
       $entryfile = $entriesdir.$y."/".$m."/".$date.$entriesext;
-      $wrote = file_put_contents($entryfile,$entry);
+      $wrote = file_put_contents($entryfile,json_encode($jsondata));
       
       if($wrote) {
         echo '<p style="color: green;">Saved entry '.$date.'</p>';
@@ -54,7 +64,7 @@ if((array_key_exists("pass",$_POST) and $_POST['pass']==$pass) or (array_key_exi
       var_dump($date);
       exit();
     }
-
+    
   }
   
   //load the list of entries (after the write occurs)
@@ -72,8 +82,12 @@ if((array_key_exists("pass",$_POST) and $_POST['pass']==$pass) or (array_key_exi
   $m = substr($displayeddate,5,2);
 
   //read the file if it exists, else use the placeholder text
-
-  $displayedentry = "Today I ";
+  
+  $jsondata = array(
+    "entry" => "Today I ",
+    "rating" => 5
+  );
+  
   if(in_array($y,$years)) {
     foreach(glob($entriesdir.$y."/"."*",GLOB_ONLYDIR) as $e) {
       $months[] = basename($e);
@@ -82,22 +96,47 @@ if((array_key_exists("pass",$_POST) and $_POST['pass']==$pass) or (array_key_exi
       $dates = glob($entriesdir.$y."/".$m."/"."*");
       $entryfile = $entriesdir.$y."/".$m."/".$displayeddate.$entriesext;
       if(file_exists($entryfile)) {
-        $displayedentry = file_get_contents($entryfile);
+        $jsondata = json_decode(file_get_contents($entryfile),true);
       }
     }
   }
+  
+  //var_dump($jsondata);
+  
 ?>
     <form name="journalEntry" method="post">
       <input name="date" type="date" value="<?php echo $displayeddate; ?>" readonly title="Note: if the date is of a previous entry, it will overwrite it">
       <br>
       <p>What did you do today?</p>
-      <textarea name="entry" autofocus><?php echo $displayedentry; ?></textarea>
+      <textarea name="entry" autofocus><?php echo $jsondata['entry']; ?></textarea>
+      <p>Rate Your Day</p>
+      <div class="stars">
+        <?php
+          for ($i=1;$i<=5;$i++) {
+          ?>
+        <label class="star star-<?php echo $i; ?>" for="star-<?php echo $i;?>"></label>
+        <input class="star star-1" id="star-<?php echo $i;?>" value=<?php echo $i; ?> type="radio" name="rating" <?php if($i==$jsondata['rating']) { echo 'checked="checked"'; } ?>/>
+          <?php
+        }
+        ?>
+          <!--
+        <label class="star star-2" for="star-2"></label>
+        <input class="star star-2" id="star-2" value=2 type="radio" name="rating"/>
+        <label class="star star-3" for="star-3"></label>
+        <input class="star star-3" id="star-3" value=3 type="radio" name="rating"/>
+        <label class="star star-4" for="star-4"></label>
+        <input class="star star-4" id="star-4" value=4 type="radio" name="rating"/>
+        <label class="star star-5" for="star-5"></label>
+        <input class="star star-5" id="star-5" value=5 type="radio" name="rating" checked="checked" />
+        -->
+      </div>
       <br>
       <button type="submit">Done</button>
     </form>
     <div class="break"></div>
     <p><b>Previous Entries</b></p>
     <?php 
+    
     echo '<div id="prevents">';
     echo '<div class="linkwrapper">';
     foreach($years as $y) {
@@ -107,12 +146,13 @@ if((array_key_exists("pass",$_POST) and $_POST['pass']==$pass) or (array_key_exi
     echo '</div>';
 
     echo '<script src="./journal.js"></script>';
-
-  } else {
+  
+} else {
       //no password or incorrect password given
       ?>
     <form name="pw" method="post">
       <p id="passline">Password: <input name="pass" type="password" autofocus><button type="submit" >Submit</button></p>
+    </form>
 <?php } ?>
   </body>
 </html>
